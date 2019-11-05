@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 using UnityEngine;
 
 public class DungeonGen : MonoBehaviour
 {
     public RoomModule[] Rooms;
     public RoomModule StartRoom;
-    //public RoomModule BossRoom;
+    public RoomModule BossRoom;
+    public int NumOfRooms;
 
     public int Generations = 1;
 
@@ -32,7 +34,16 @@ public class DungeonGen : MonoBehaviour
             }
 
             pendExits = newExit;
+
+            foreach(RoomModule room in Rooms)
+            {
+                if(gens == Generations)
+                {
+                    
+                }
+            }
         }
+
     }
 
     private void MatchExit(RoomConnector oldExit, RoomConnector newExit)
