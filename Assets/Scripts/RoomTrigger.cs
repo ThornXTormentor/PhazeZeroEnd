@@ -4,8 +4,26 @@ using UnityEngine;
 
 public class RoomTrigger : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
+    public GameObject boss;
+    public Transform bossPos;
+    private RoomTrigger trigger;
+
+    private void Awake()
     {
-        //SpawnBoss();
+        trigger = this;
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if(collision.gameObject.tag == "Player")
+        {
+             BossSpawner();
+        }
+    }
+
+    private void BossSpawner()
+    {
+        Instantiate(boss, bossPos.position, bossPos.rotation);
+        Destroy(trigger);
     }
 }

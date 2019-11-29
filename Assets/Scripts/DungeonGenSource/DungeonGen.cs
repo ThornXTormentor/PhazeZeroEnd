@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
 using UnityEngine;
 
 public class DungeonGen : MonoBehaviour
@@ -9,39 +8,58 @@ public class DungeonGen : MonoBehaviour
     public RoomModule[] Rooms;
     public RoomModule StartRoom;
     public RoomModule BossRoom;
+    public RoomModule DeadEnd;
     public int NumOfRooms;
 
-    public int Generations = 1;
+    public int Generations;
 
     private void Start()
     {
         var start = (RoomModule)Instantiate(StartRoom, transform.position, transform.rotation);
         var pendExits = new List<RoomConnector>(start.GetExitsForRoom());
+        bool BossRoomSpawned = false;
 
-        for(int gens = 0; gens < Generations; gens++)
+        for (int gens = 0; gens <= Generations; gens++)
         {
             var newExit = new List<RoomConnector>();
+            string newTag;
+            RoomModule newRoomPrefab;
+            RoomModule newRoom;
+            RoomConnector[] newRoomExits;
+            RoomConnector exitMatch;
 
-            foreach(var pendExit in pendExits)
+            foreach (var pendExit in pendExits)
             {
-                var newTag = GetRandom(pendExit.connectorTags);
-                var newRoomPrefab = GetRandomRoom(Rooms, newTag);
-                var newRoom = (RoomModule)Instantiate(newRoomPrefab);
-                var newRoomExits = newRoom.GetExitsForRoom();
-                var exitMatch = newRoomExits.FirstOrDefault(x => x.IsDefault) ?? GetRandom(newRoomExits);
-                MatchExit(pendExit, exitMatch);
-                newExit.AddRange(newRoomExits.Where(e => e != exitMatch));
+                if (gens == Generations && pendExits.Count > 0 && BossRoomSpawned == false)
+                {
+                    newRoom = (RoomModule)Instantiate(BossRoom);
+                    newRoomExits = newRoom.GetExitsForRoom();
+                    exitMatch = newRoomExits.FirstOrDefault(x => x.IsDefault) ?? GetRandom(newRoomExits);
+                    MatchExit(pendExit, exitMatch);
+                    BossRoomSpawned = true;
+                }
+                else if (gens == Generations && pendExits.Count > 0 && BossRoomSpawned == true)
+                {
+                    newRoom = (RoomModule)Instantiate(DeadEnd);
+                    newRoomExits = newRoom.GetExitsForRoom();
+                    exitMatch = newRoomExits.FirstOrDefault(x => x.IsDefault) ?? GetRandom(newRoomExits);
+                    MatchExit(pendExit, exitMatch);
+                }
+                else
+                {
+                    newTag = GetRandom(pendExit.connectorTags);
+                    newRoomPrefab = GetRandomRoom(Rooms, newTag);
+
+                    newRoom = (RoomModule)Instantiate(newRoomPrefab);
+                    newRoomExits = newRoom.GetExitsForRoom();
+                    exitMatch = newRoomExits.FirstOrDefault(x => x.IsDefault) ?? GetRandom(newRoomExits);
+                    MatchExit(pendExit, exitMatch);
+                    newExit.AddRange(newRoomExits.Where(e => e != exitMatch));
+                }
             }
 
             pendExits = newExit;
 
-            foreach(RoomModule room in Rooms)
-            {
-                if(gens == Generations)
-                {
-                    
-                }
-            }
         }
 
     }
