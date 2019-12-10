@@ -7,6 +7,14 @@ TagManager:
   - StartDoor
   - StartDoorButton
   - BossRoom
+  - Hand
+  - EnemySpawn
+  - NormalRoom
+  - Elevator
+  - GroundEnemy
+  - FloatingEnemy
+  - Gun
+  - LiftButton
   layers:
   - Default
   - TransparentFX
@@ -18,8 +26,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Player
+  - Grabbable
   - 
   - 
   - 

@@ -7,7 +7,7 @@ public class StartRoomTrigger : MonoBehaviour
     private StartRoomTrigger trigger;
     public GameObject StartDoor;
     private Vector3 doorPos;
-    private float doorSpeed = 3f;
+    private float doorSpeed = 1.2f;
     private bool open = false;
 
     private MaterialPropertyBlock propBlock;
@@ -20,7 +20,7 @@ public class StartRoomTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Hand")
         {
             OpenStartDoor();
         }
@@ -33,8 +33,6 @@ public class StartRoomTrigger : MonoBehaviour
         int Speed = 3;
         int Offset = 2;
 
-        
-
         propBlock = new MaterialPropertyBlock();
         Renderer = GetComponent<Renderer>();
 
@@ -44,6 +42,7 @@ public class StartRoomTrigger : MonoBehaviour
         Renderer.SetPropertyBlock(propBlock);
 
         doorPos = StartDoor.transform.position;
+
         open = true;
     }
 
