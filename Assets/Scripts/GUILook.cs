@@ -20,6 +20,7 @@ public class GUILook : MonoBehaviour
             if (lookDirectionHit.transform.tag == "Gun")
             {
                 GUI.Box(new Rect(250, 250, 300, 50), "(Grab) R Trigger -> Fire");
+                GUI.Box(new Rect(350, 350, 300, 50), "Shots: ");
                 Debug.Log("Looking at gun");
             }
 

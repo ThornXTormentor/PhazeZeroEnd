@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Gun : MonoBehaviour
 {
@@ -16,6 +20,11 @@ public class Gun : MonoBehaviour
 
     private float fireDelay = 0.5f;
 
+    public Text shotText;
+
+    [SerializeField]
+    public int shots;
+
     private void Awake()
     {
         gun = this;
@@ -27,6 +36,18 @@ public class Gun : MonoBehaviour
         {
             fireDelay = Time.time + 0.8f / fireRate;
             Shoot();
+            shots++;
+
+            shotText.text = "Shots: " + shots.ToString();
+        }
+
+        if (OVRInput.GetDown(OVRInput.RawButton.Y))
+        {
+            SaveGame();
+        }
+        if (OVRInput.GetDown(OVRInput.RawButton.X))
+        {
+            LoadGame();
         }
     }
 
@@ -54,5 +75,52 @@ public class Gun : MonoBehaviour
         }
 
         
+    }
+
+    public void SaveGame()
+    {
+        Save save = CreateSaveGameObject();
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/gamesave.save");
+        bf.Serialize(file, save);
+        file.Close();
+        Debug.Log("Game Saved");
+
+        shots = 0;
+    }
+
+    public void LoadGame()
+    {
+        if (File.Exists(Application.persistentDataPath + "/gamesave.save"))
+        {
+            shots = 0;
+
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/gamesave.save", FileMode.Open);
+            Save save = (Save)bf.Deserialize(file);
+            file.Close();
+            Debug.Log("Game Loaded");
+
+            shots = save.shots;
+        }
+
+    }
+
+    private Save CreateSaveGameObject()
+    {
+        Save save = new Save();
+
+        save.shots = shots;
+
+        return save;
+    }
+
+    public void SaveAsJSON()
+    {
+        Save save = CreateSaveGameObject();
+        string json = JsonUtility.ToJson(save);
+
+        Debug.Log("Saving as JSON: " + json);
     }
 }
